@@ -1,0 +1,117 @@
+Estampitas del Mundial, Neutrones y Casinos
+========================================================
+
+### Neutrones
+En ciertas situaciones resulta buena idea hacer "experimentos" previos (muchas veces haciendo cálculos mentales e imaginando escenarios hipotéticos) para tener idea de un proceso cuyas características principales, *a priori*, desconocemos. 
+
+Esto fue precisamente lo que se le ocurrió a Stanislaw Ulam en 1946, físico que entonces trabajaba en el Laboratorio Nacional de Los Alamos, en Estados Unidos (aquél en el que se desarrolló la bomba atómica). Su trabajo consistía, más o menos, en averiguar las características del proceso físico mediante el cual los neutrones atraviesan diversos metales. 
+
+A pesar de que Ulam contaba con los datos necesarios para investigar este fenómeno, le resultaba prácticamente imposible resolver el problema con los métodos convencionales, tales como la resolución de ecuaciones matemáticas; por tanto, a Ulam se le ocurrió atacar el problema mediante experimentos *aleatorios*.
+
+Mientras estaba enfermo durante 1946, Ulam jugaba solitario (el juego de cartas) y se le ocurrió preguntarse cuál sería la probabilidad de ganar un tipo de juego de solitario jugando con una baraja de 52 cartas; pronto se dio cuenta que era prácticamente imposible hacer el cálculo a la manera tradicional (con fórmulas de conteo y cálculos de probabilidad), por lo que ideó una manera más fácil: imaginar que se juega el juego muchas veces, quizá cien o doscientas, y simplemente observar el número esperado de juegos ganados. 
+
+Este método, de alguna u otra manera, lo quiso aplicar al problema de los neutrones y lo platicó con su colega John von Neumann (sí, el mismo von Neumann de la teoría de juegos y un largo etcétera), a quien le pareció buena idea; entonces, decidieron aplicarlo. Pero como el objeto de las investigaciones en el Laboratorio de Los Alamos era secreto, von Neumann sugirió ponerle al método recién inventado un nombre clave: método Monte Carlo, ya que lo relacionó con el famoso casino de Mónaco (después de todo, el método se le ocurrió a Ulam jugando cartas).
+
+A estas alturas algún lector se deberá estar preguntando qué demonios tiene que ver esto con las estampitas que cada año de mundial de fútbol la empresa Panini saca a la venta. Ahora lo veremos (si es que no se han aburrido).
+
+### Estampitas
+Cada cuatro años, Panini vende el álbum del mundial de fútbol, que hay que llenar con estampitas de los jugadores, los logos de las asociaciones de fútbol, las fotos de los estadios, etc. Para el mundial de 2014 hay que llenar 640 estampitas, que se venden en sobrecitos de 5 estampitas: por lo tanto, hay que comprar, al menos, 128 sobrecitos para llenar un álbum.
+
+Es aquí donde empiezan a surgir dificultades: uno pensaría que es sumamente improbable que comprando 128 sobrecitos se pueda llenar un álbum, ya que implicaría no sacar ninguna estampita repetida. De ahí que, una primera pregunta que podemos hacernos es, ¿cuál es la probabilidad de comprar, digamos, 600 sobrecitos y llenar un álbum completo? Para obtener una respuesta, utilizaremos el método Monte Carlo ideado por Ulam y von Neumann.
+
+Imaginemos que le pedimos a 1,000 personas (seleccionadas de manera aleatoria) que compren 600 sobrecitos cada una (es decir 3,000 estampitas) y al final observamos los casos en los que una persona obtuvo un álbum completo; podemos hacer esto *simulando* este experimento mental en la computadora y entonces calcular la probabilidad que nos interesa con una función hecha en el entorno estadístico R  (los códigos para hacer el análisis se encuentran al fin del texto):
+
+
+
+
+
+```
+## monte.carlo
+##   Completo Incompleto 
+##      0.002      0.998
+```
+
+
+Vemos que, una vez hecha la simulación en la computadora, la probabilidad de completar un álbum es de 0.002. Esto concuerda con nuestra conjetura previa de que la probabilidad de llenar un álbum comprando pocos sobrecitos es muy pequeña.
+
+Por tal motivo, un coleccionista no querrá llenar el álbum comprando únicamente sobrecitos, sobre todo tomando en cuenta que cada sobrecito se vende a 6 pesos (si compra, como en el experimento, 600 sobrecitos, habrá gastado 3,600 pesos, ¡y aún así tendrá una probabilidad muy baja de llenar el álbum!). Afortunadamente, existe un mercado "secundario" de estampitas *solas* o "repetidas", por lo que el coleccionista podría comprar, digamos 128 sobrecitos y comprar las estampitas faltantes para llenar el álbum en dicho mercado. 
+
+Ahora la pregunta es: ¿existe un número de estampitas compradas (en sobrecito y solas) tal que minimice el costo de llenar un álbum? Para responder esta pregunta, una vez más podemos hacer uso del método Monte Carlo y del entorno R.
+
+Supondremos que cada sobre con 5 estampitas tiene un precio de 6 pesos (1.2 pesos por estampita) y que cada estampita sola tiene un precio de 5 pesos. Simularemos la compra de un número fijo de sobrecitos y asumimos que las estampitas que nos faltan para llenar el álbum las adquirimos en el mercado alternativo. Por lo tanto, el costo de llenar el álbum será $C = (n_1*p_1) + (n_2*p_2)$, donde $p_1$ y $p_2$ son los precios de las estampitas de sobrecito y solas, respectivamente, y $n_1$ y $n_2$ el número de estampitas de sobrecito y estampitas solas compradas.
+
+Esta función nos ayudará a entender el tipo de relación que existe entre el costo *esperado* de llenar el álbum y el número de estampitas que debemos comprar. De existir, será fácil conocer el número de estampitas que debemos comprar (tanto en sobrecitos como solas) tal que llenar el álbum nos cueste lo menos posible.
+
+
+
+
+
+
+
+![plot of chunk graph](figure/graph.png) 
+
+
+Hechas las simulaciones, vemos en la gráfica que existe un número de estampitas compradas tal que minimizamos el costo de llenar el álbum del mundial: si compramos alrededor de 890 estampitas (las primeras 640 no repetidas de sobrecitos y las restantes en el mercado secundario) llenaremos el álbum con alrededor de 1,850 pesos. Si por el contrario, decidimos adoptar una estrategia de comprar 1,500 estampitas, el costo de llenar el álbum podría elevarse a más de 2,100 pesos. 
+
+Como vemos, las ideas originales de Ulam y von Neuman nos ayudan a simular escenarios que de otra forma sería impráctico tratar, aún si se trata de un tema tan divertido y aparentemente sencillo como el de las estampitas del álbum Panini. Después de todo, los métodos de la física (comportamiento de partículas subatómicas como los neutrones) y la economía (problema dual de minimización de costos dado cierto nivel de "utilidad") no están tan alejados ;-) . 
+
+### Código R utilizado
+
+Ustedes pueden replicar los resultados y modificar los supuestos, como el precio de las estampitas y el número mínimo de estampitas a comprar, utilizando los códigos de R que se muestran a continuación:
+
+
+```r
+## Función para muestreo de n estampitas a partir de m estampitas.
+album.comp <- function(n, m) {
+    estampitas <- sample(1:n, size = m, replace = TRUE)
+    ifelse(length(unique(estampitas)) == n, "Completo", "Incompleto")
+}
+```
+
+
+
+```r
+## Simulación para calcular la probabildad de comprar n estampitas y llenar
+## un álbum Simulamos con la función album.comp y n = 640 (estampitas en el
+## álbum Panini) y m = 3000 (estampitas compradas, o sea 600 sobrecitos)
+set.seed(4)  ## Para reproducibilidad
+monte.carlo <- replicate(1000, album.comp(640, 3000))
+table(monte.carlo)/1000  ## Probabilidad de llenar un álbum con 3000 estampitas
+```
+
+
+
+```r
+## Función de costos La estampita de sobrecito vale 1.2 pesos (6 pesos / 5
+## estampitas) La estampita del mercado secundario vale 5 pesos.  El costo
+## será (costo1*estampita de sobre) + (costo2*estampita sola)
+costos <- function(num, costo.sobre, costo.sola) {
+    costo.sobre <- 1.2
+    costo.sola <- 5
+    muestra <- sample(1:640, size = num, replace = TRUE)
+    n.comp <- length(unique(muestra))
+    n.rep <- 640 - n.comp
+    (num * costo.sobre) + (n.rep * costo.sola)
+}
+```
+
+
+
+```r
+## Generamos la gráfica: Usamos sapply para almacenar el costo esperado en un
+## vector:
+sec <- 500:1500  ## secuencia de 700 a 1500 estampitas compradas
+opt.cost <- sapply(sec, media.esp)
+datos.graf <- data.frame(sec, opt.cost)
+
+## Gráfica:
+library(ggplot2)
+
+ggplot(datos.graf, aes(x = sec, y = opt.cost)) + geom_point(size = 2, colour = "blue") + 
+    theme_grey() + theme(plot.title = element_text(size = rel(1.2)), axis.title.x = element_text(size = rel(1.2)), 
+    axis.title.y = element_text(size = rel(1.2)), axis.text.x = element_text(size = rel(1.2)), 
+    axis.text.y = element_text(size = rel(1.2)), legend.text = element_text(size = rel(1.2)), 
+    legend.title = element_text(size = rel(1.2))) + labs(x = "Estampitas compradas", 
+    y = "Costo esperado en pesos") + ggtitle("Costo esperado de estampitas (precios $1.2 y $5)")
+```
+
